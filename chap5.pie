@@ -1,0 +1,91 @@
+#lang pie
+
+(claim step-length
+       (Pi ((T U))
+           (-> T (List T) Nat Nat)))
+(define step-length
+  (lambda (T)
+    (lambda (n ns len)
+      (add1 len))))
+
+(claim length
+       (Pi ((T U))
+           (-> (List T) Nat)))
+(define length
+  (lambda (T)
+    (lambda (ns)
+      (rec-List
+       ns
+       0
+       (step-length T)))))
+
+(claim append-step
+       (Pi ((T U))
+           (-> T (List T) (List T) (List T))))
+(define append-step
+  (lambda (T)
+    (lambda (e es new-list)
+      (:: e new-list))))
+
+(claim append
+       (Pi ((T U))
+           (-> (List T) (List T) (List T))))
+(define append
+  (lambda (T)
+    (lambda (a b)
+      (rec-List
+       a
+       b
+       (append-step T)))))
+
+(claim snoc
+       (Pi ((T U))
+           (-> (List T) T (List T))))
+(define snoc
+  (lambda (T)
+    (lambda (es e)
+      (rec-List
+       es
+       (:: e nil)
+       (append-step T)))))
+
+(claim reverse-step
+       (Pi ((T U))
+           (-> T (List T) (List T) (List T))))
+(define reverse-step
+  (lambda (T)
+    (lambda (e es new-list)
+      (snoc T new-list e))))
+
+(claim reverse
+       (Pi ((T U))
+           (-> (List T) (List T))))
+(define reverse
+  (lambda (T)
+    (lambda (l)
+      (rec-List
+       l
+       (the (List T) nil)
+       (reverse-step T)))))
+
+(claim toppings
+       (List Atom))
+(define toppings
+  (:: 'potato
+      (:: 'butter nil)))
+
+(claim condiments
+       (List Atom))
+(define condiments
+  (:: 'chives
+      (:: 'mayonnaise nil)))
+
+(claim kartoffelmad
+       (List Atom))
+(define kartoffelmad
+  (append Atom
+          (append Atom
+                  condiments toppings)
+          (reverse Atom
+                   (:: 'plate
+                       (:: 'rye-bread nil)))))

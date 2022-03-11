@@ -1,0 +1,65 @@
+#lang pie
+
+(claim Pear
+       U)
+(define Pear
+  (Pair Nat Nat))
+
+(claim Pear-maker
+       (-> Nat Nat
+           Pear))
+(define Pear-maker
+  (lambda (a d)
+    (cons a d)))
+
+(claim Apple
+       U)
+(define Apple
+  (Pair Nat Nat))
+
+(claim p Pear)
+(define p (cons 1 2))
+
+(claim a Apple)
+(define a (cons 1 2))
+
+(claim step+ (-> Nat Nat))
+(define step+
+  (lambda (n)
+    (add1 n)))
+
+(claim + (-> Nat Nat Nat))
+(define +
+  (lambda (a b)
+    (iter-Nat a b step+)))
+
+(claim gauss-step (-> Nat Nat Nat))
+(define gauss-step
+  (lambda (n ret)
+    (+ n ret)))
+
+(claim gauss (-> Nat Nat))
+(define gauss
+  (lambda (n)
+    (rec-Nat (add1 n) zero gauss-step)))
+
+
+(claim FirstClass (-> U U))
+(define FirstClass
+  (lambda (t)
+    t))
+
+(claim depends (FirstClass Atom))
+(define depends 'asdf)
+
+(claim ImpossibleFruitTree U)
+(define ImpossibleFruitTree (Pair Pear Apple))
+
+(claim impossible ImpossibleFruitTree)
+(define impossible (cons (cons 1 2) (cons 3 4)))
+
+(claim foo (-> (Pair Atom Atom) Atom))
+(define foo (lambda (y) (car y)))
+
+(claim bar (-> (Pair Atom Atom) Atom))
+(define bar (lambda (y) (foo y)))

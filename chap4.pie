@@ -1,0 +1,82 @@
+#lang pie
+
+(claim foo
+       (Pi ((A U)
+            (D U))
+           (-> A U)))
+
+(define foo
+  (lambda (A D)
+    (lambda (junk)
+      D)))
+
+(claim bar
+       (Pi ((A U))
+           (-> (Pair A Nat) A)))
+
+(define bar
+  (lambda (A)
+    (lambda (p)
+      (car p))))
+
+(claim elim-Pair
+       (Pi ((A U) (D U) (X U))
+           (-> (Pair A D) (-> A D X)
+               X)))
+
+(define elim-Pair
+  (lambda (A D X)
+    (lambda (p f)
+      (f (car p) (cdr p)))))
+
+(claim kar
+       (Pi ((A U) (D U))
+           (-> (Pair A D)
+               A)))
+
+(define kar
+  (lambda (A D)
+    (lambda (p)
+      (elim-Pair
+       A D A
+       p
+       (lambda (a d)
+         a)))))
+
+(claim kdr
+       (Pi ((A U) (D U))
+           (-> (Pair A D)
+               D)))
+
+(define kdr
+  (lambda (A D)
+    (lambda (p)
+      (elim-Pair
+       A D D
+       p
+       (lambda (a d)
+         d)))))
+
+(claim flip
+       (Pi ((A U) (D U))
+           (-> (Pair A D)
+               (Pair D A))))
+
+(define flip
+  (lambda (A D)
+    (lambda (p)
+      (elim-Pair
+       A D (Pair D A)
+       p
+       (lambda (a d)
+         (cons d a))))))
+
+(claim twin
+       (Pi ((A U))
+           (-> A
+               (Pair A A))))
+
+(define twin
+  (lambda (A)
+    (lambda (a)
+      (cons a a))))
