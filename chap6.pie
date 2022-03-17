@@ -1,0 +1,35 @@
+#lang pie
+
+(claim first-of-one
+       (Pi ((T U))
+           (-> (Vec T 1) T)))
+(define first-of-one
+  (lambda (T)
+    (lambda (v)
+      (head v))))
+
+(claim first-of-two
+       (Pi ((T U))
+           (-> (Vec T 2) T)))
+(define first-of-two
+  (lambda (T)
+    (lambda (v)
+      (head v))))
+
+(claim first
+       (Pi ((T U)
+            (len Nat))
+           (-> (Vec T (add1 len)) T)))
+(define first
+  (lambda (T len)
+    (lambda (v)
+      (head v))))
+
+(claim rest
+       (Pi ((T U)
+            (len Nat))
+           (-> (Vec T (add1 len)) (Vec T len))))
+(define rest
+  (lambda (T len)
+    (lambda (v)
+      (tail v))))
