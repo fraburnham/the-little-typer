@@ -1,0 +1,123 @@
+#lang pie
+
+(claim mot-peas
+       (-> Nat U))
+(define mot-peas
+  (lambda (l)
+    (Vec Atom l)))
+
+(claim step-peas
+       (Pi ((l Nat))
+           (-> (mot-peas l)
+               (mot-peas (add1 l)))))
+(define step-peas
+  (lambda (l)
+    (lambda (peas)
+      (vec:: 'peas peas))))
+
+(claim peas
+       (Pi ((l Nat))
+           (mot-peas l)))
+(define peas
+  (lambda (l)
+    (ind-Nat
+     l
+     mot-peas
+     vecnil
+     step-peas)))
+
+(claim also-rec-Nat
+       (Pi ((T U))
+           (-> Nat T (-> Nat T T)
+               T)))
+(define also-rec-Nat
+  (lambda (T)
+    (lambda (target base step)
+      (ind-Nat
+       target
+       (lambda (junk) T)
+       base
+       step))))
+
+(claim base-last
+       (Pi ((T U))
+           (-> (Vec T (add1 zero))
+               T)))
+(define base-last
+  (lambda (T)
+    (lambda (v)
+      (head v))))
+
+(claim mot-last
+       (-> U Nat
+           U))
+(define mot-last
+  (lambda (T)
+    (lambda (n)
+      (-> (Vec T (add1 n))
+          T))))
+
+(claim step-last
+       (Pi ((T U)
+            (l Nat))
+           (-> (mot-last T l)
+               (mot-last T (add1 l)))))
+(define step-last
+  (lambda (T l)
+    (lambda (fn)
+      (lambda (v)
+        (fn (tail v))))))
+
+(claim last
+       (Pi ((T U)
+            (l Nat))
+           (-> (Vec T (add1 l))
+               T)))
+(define last
+  (lambda (T l)
+    (ind-Nat
+     l
+     (mot-last T)
+     (base-last T)
+     (step-last T))))
+
+(claim base-drop-last
+       (Pi ((T U))
+           (-> (Vec T (add1 zero))
+               (Vec T zero))))
+(define base-drop-last
+  (lambda (T)
+    (lambda (v)
+      vecnil)))
+
+(claim mot-drop-last
+       (-> U Nat
+           U))
+(define mot-drop-last
+  (lambda (T l)
+    (-> (Vec T (add1 l))
+        (Vec T l))))
+
+(claim step-drop-last
+       (Pi ((T U)
+            (l Nat))
+           (-> (mot-drop-last T l)
+               (mot-drop-last T (add1 l)))))
+(define step-drop-last
+  (lambda (T l)
+    (lambda (drop-last)
+      (lambda (v)
+        (vec:: (head v)
+               (drop-last (tail v)))))))
+
+(claim drop-last
+       (Pi ((T U)
+            (l Nat))
+           (-> (Vec T (add1 l))
+               (Vec T l))))
+(define drop-last
+  (lambda (T l)
+    (ind-Nat l
+             (mot-drop-last T)
+             (base-drop-last T)
+             (step-drop-last T))))
